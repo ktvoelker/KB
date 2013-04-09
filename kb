@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+# TODO fix this
+source ./kblib.sh
+init
+run "$*"
