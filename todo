@@ -8,6 +8,12 @@ Tag support
 
   Make them part of the query language
 
+Improve the query language
+
+  Temporal queries
+
+  Separate title and body queries
+
 Make auto-commit fail if there are changes in the index
 
 Implement delete
