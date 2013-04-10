@@ -10,12 +10,26 @@ fi
 REPO="$HOME/.kb"
 MAGICFILE="$REPO/.magic"
 
-function find_gnu_sed {
-  # TODO something more intelligent
-  which gsed || which sed
+function missing {
+  WHAT="$1"
+  echo "GNU $1 not found"
+  exit 1
 }
 
-SED="$(find_gnu_sed)"
+if [ "$(uname -s)" = "Darwin" ]; then
+  function sed {
+    gsed "$@"
+  }
+  function xargs {
+    gxargs "$@"
+  }
+  function find {
+    gfind "$@"
+  }
+  function echo {
+    gecho "$@"
+  }
+fi
 
 function init {
   if [ -d "$REPO" -a -f "$MAGICFILE" -a "$MAGIC" = "$(cat "$MAGICFILE")" ]; then
@@ -36,29 +50,26 @@ function init {
   fi
 }
 
-function edit_ok {
-  FILE="$1"
-  BACKUP="$(mktemp -t kb-bak)"
-  cp "$FILE" "$BACKUP"
-  if "$EDITOR" "$FILE"; then
-    if diff -q "$BACKUP" "$FILE"; then
-      rm "$BACKUP"
-    else
-      rm "$BACKUP"
-      return 0
-    fi
-  else
-    rm "$BACKUP"
+function extract_title {
+  SRC="$1"
+  TITLE="$(grep -e '^\s*title\s*:\s*' "$SRC" | head -n 1)"
+  if [ -n "$TITLE" ]; then
+    echo -n "$TITLE" | sed -e 's/^\s*title\s*:\s*//'
   fi
-  return 1
 }
 
 function extract_filename {
   SRC="$1"
-  TITLE="$(grep -e '^\s*title\s*:\s*' "$SRC" | head -n 1)"
-  if [ -n "$TITLE" ]; then
-    echo -n "$TITLE" | "$SED" -e 's/^\s*title\s*:\s*//'
-  fi
+  extract_title "$SRC" | sed -e 's/\s/_/g' | (cat -; echo -n ".txt")
+}
+
+function filter_by {
+  FILTER="$1"
+  grep -Ei "$1"
+}
+
+function list_all {
+  find . -mindepth 1 -maxdepth 1 -name '*.txt'
 }
 
 function run {
@@ -73,36 +84,71 @@ function run {
 
     a | ad | add)
       TMPDATA="$(mktemp -t kb-add)"
-      done=""
-      while [ -z "$done" ]; do
-        if edit_ok "$TMPDATA"; then
-          FILENAME="$(extract_filename "$TMPDATA")"
-          if [ -n "$FILENAME" -a ! -e "$FILENAME" ]; then
-            done="done"
-          fi
+      "$EDITOR" "$TMPDATA"
+      if [ -z "$(cat "$TMPDATA")" ]; then
+        echo "Aborted."
+        exit 1
+      else
+        FILENAME="$(extract_filename "$TMPDATA")"
+        if [ -n "$FILENAME" -a ! -e "$FILENAME" ]; then
+          mv "$TMPDATA" "$FILENAME"
+          TITLE="$(extract_title "$FILENAME")"
+          git add "$FILENAME"
+          git commit -m "Added '$TITLE'"
+        else
+          echo "Error: could not extract filename."
+          echo "The new entry has been left at $TMPDATA."
+          exit 1
         fi
-      done
-      mv "$TMPDATA" "$FILENAME"
+      fi
       ;;
 
     e | ed | edi | edit)
-      # TODO
-      true
+      FILTER="$1"
+      MATCHES="$(list_all | filter_by "$FILTER")"
+      COUNT="$(wc -l <<<"$MATCHES")"
+      if [ "$COUNT" -eq 0 ]; then
+        echo "No matches."
+      elif [ "$COUNT" -eq 1 ]; then
+        FILENAME="$(basename "$(tr -d "\n" <<<"$MATCHES")")"
+        OLDTITLE="$(extract_title "$FILENAME")"
+        "$EDITOR" "$FILENAME"
+        if git status --porcelain | grep "^ M $FILENAME"; then
+          NEWFILENAME="$(extract_filename "$FILENAME")"
+          TITLE="$(extract_title "$FILENAME")"
+          git add "$FILENAME"
+          if [ "$NEWFILENAME" != "$FILENAME" ]; then
+            git mv "$FILENAME" "$NEWFILENAME"
+            git commit -m "Renamed '$OLDTITLE' to '$TITLE'"
+          else
+            git commit -m "Edited '$TITLE'"
+          fi
+        fi
+      else
+        echo "$COUNT matches:"
+        for i in "$MATCHES"; do
+          echo "  $i"
+        done
+      fi
       ;;
 
     d | de | del | dele | delet | delete)
       # TODO
-      true
+      echo "Not implemented."
       ;;
 
     l | li | lis | list | ls)
-      # TODO
-      true
+      FILTER="$1"
+      {
+        for i in $(list_all | filter_by "$FILTER"); do
+          extract_title "$i"
+        done
+      } | sort
       ;;
 
     h | he | hel | help)
-      # TODO
-      echo "HELP!"
+      echo "Usage:"
+      echo "  kb (a[dd] | (e[dit] | d[elete] | l[ist]) QUERY)"
       ;;
 
     *)

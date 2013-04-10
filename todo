@@ -1,0 +1,14 @@
+
+TODO
+====
+
+Tag support
+
+  Show them in list mode
+
+  Make them part of the query language
+
+Make auto-commit fail if there are changes in the index
+
+Implement delete
+

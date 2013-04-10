@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-# TODO fix this
-source ./kblib.sh
+source "$(dirname "$(readlink "$0" || echo "$0")")/kblib.sh"
 init
-run "$*"
+run "$@"
