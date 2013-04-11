@@ -10,12 +10,6 @@ fi
 REPO="$HOME/.kb"
 MAGICFILE="$REPO/.magic"
 
-function missing {
-  WHAT="$1"
-  echo "GNU $1 not found"
-  exit 1
-}
-
 if [ "$(uname -s)" = "Darwin" ]; then
   function sed {
     gsed "$@"
@@ -50,12 +44,18 @@ function init {
   fi
 }
 
+function extract_meta {
+  FIELD="$1"
+  SRC="$2"
+  VAL="$(grep -e '^\s*'"$FIELD"'\s*:\s*' "$SRC" | head -n 1)"
+  if [ -n "$VAL" ]; then
+    echo -n "$VAL" | sed -e 's/^\s*'"$FIELD"'\s*:\s*//'
+  fi
+}
+
 function extract_title {
   SRC="$1"
-  TITLE="$(grep -e '^\s*title\s*:\s*' "$SRC" | head -n 1)"
-  if [ -n "$TITLE" ]; then
-    echo -n "$TITLE" | sed -e 's/^\s*title\s*:\s*//'
-  fi
+  extract_meta title "$SRC"
 }
 
 function extract_filename {
@@ -63,9 +63,49 @@ function extract_filename {
   extract_title "$SRC" | sed -e 's/\s/_/g' | (cat -; echo -n ".txt")
 }
 
+function extract_tags {
+  SRC="$1"
+  extract_meta tags "$SRC"
+}
+
+function match {
+  PRED="$1"
+  FILE="$2"
+
+  case "$PRED" in
+
+    tag:*)
+      TAG="$(tail -c +5 <<<"$PRED")"
+      if extract_tags "$FILE" | grep -Eiq '\b'"$TAG"'\b'; then
+        return 0
+      else
+        return 1
+      fi
+      ;;
+
+    *)
+      if grep -Eiq "$PRED" "$FILE"; then
+        return 0
+      else
+        return 1
+      fi
+
+  esac
+}
+
 function filter_by {
-  FILTER="$1"
-  grep -Ei "$1"
+  if [ $# -eq 0 ]; then
+    cat -
+  else
+    for file in $(cat -); do
+      for pred in "$@"; do
+        if ! match "$pred" "$file"; then
+          continue 2
+        fi
+      done
+      echo "$file"
+    done
+  fi
 }
 
 function list_all {
@@ -104,8 +144,7 @@ function run {
       ;;
 
     e | ed | edi | edit)
-      FILTER="$1"
-      MATCHES="$(list_all | filter_by "$FILTER")"
+      MATCHES="$(list_all | filter_by "$@")"
       COUNT="$(wc -l <<<"$MATCHES")"
       if [ "$COUNT" -eq 0 ]; then
         echo "No matches."
@@ -138,9 +177,8 @@ function run {
       ;;
 
     l | li | lis | list | ls)
-      FILTER="$1"
       {
-        for i in $(list_all | filter_by "$FILTER"); do
+        for i in $(list_all | filter_by "$@"); do
           extract_title "$i"
         done
       } | sort
