@@ -7,5 +7,7 @@ CREATE DATABASE kb;
 \connect kb
 
 DROP ROLE IF EXISTS web;
-CREATE ROLE web;
+CREATE ROLE web WITH LOGIN;
+
+CREATE EXTENSION pgcrypto;
 

@@ -19,13 +19,23 @@ CREATE TABLE tag (
 
 CREATE TABLE note (
   id      BIGSERIAL PRIMARY KEY,
-  owner   BIGINT    NOT NULL,
+  owner   BIGINT    NOT NULL REFERENCES person(id),
   title   TEXT      NOT NULL,
   body    TEXT      NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX note_owner_index ON note (owner);
+
+CREATE TABLE note_tag (
+  tag_id  BIGSERIAL NOT NULL REFERENCES tag(id),
+  note_id BIGSERIAL NOT NULL REFERENCES note(id),
+  PRIMARY KEY (tag_id, note_id)
+);
+
+CREATE INDEX note_tag_tag_id_index ON note_tag (tag_id);
+
+CREATE INDEX note_tag_note_id_index ON note_tag (note_id);
 
 GRANT USAGE ON SCHEMA kb TO web;
 GRANT TRUNCATE ON ALL TABLES IN SCHEMA kb TO web;

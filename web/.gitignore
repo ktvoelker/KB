@@ -1,4 +1,4 @@
 .*.sw*
 *.pyc
+/kb.ini
 /db/pg
-/db/sockets

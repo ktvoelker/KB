@@ -1,0 +1,5 @@
+
+[global]
+secret = You should probably run uuidgen and paste the output here.
+query-limit = 100
+
