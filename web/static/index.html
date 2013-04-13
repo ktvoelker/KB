@@ -2,8 +2,14 @@
 <html>
   <head>
     <title>KB</title>
+    <!--
+    <script type="text/javascript" src="static/external/require.min.js"></script>
+    -->
+    <script type="text/javascript" src="static/external/promise.min.js"></script>
+    <script type="text/javascript" src="static/main.js"></script>
+    <link href="static/main.css" type="text/css" rel="stylesheet">
   </head>
-  <body>
+  <body onload="main()">
     <h1>KB</h1>
     <p>Here you are.</p>
     <form action="/authenticate" method="POST">
@@ -11,5 +17,9 @@
       <input type="password" name="password" />
       <input type="submit" value="Authenticate" />
     </form>
+    <form name="form" onsubmit="return submit_for_json(this)" action="/note/list" method="GET">
+      <input type="submit" value="List All Notes" />
+    </form>
+    <pre id="output"></pre>
   </body>
 </html>

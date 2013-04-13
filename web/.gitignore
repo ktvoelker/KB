@@ -2,3 +2,4 @@
 *.pyc
 /kb.ini
 /db/pg
+/static/external
