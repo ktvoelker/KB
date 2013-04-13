@@ -2,13 +2,7 @@
 TODO
 ====
 
-Start using RequireJS
-
-Find a replacement for PromiseJS
-
-Figure out how to make sure URLs in index.html always work
-  If accessed as /static/index.html, they won't work right now
-  How about making a route for /static/index.html that redirects to /?
+Simple forms to exercise the whole API
 
 Real UI
 
@@ -20,4 +14,8 @@ Delete empty tags
 
 Track the amount of space a user's notes take up
   Include tags - this means tags have to have their creators tracked
+
+Figure out how to make sure URLs in index.html always work
+  If accessed as /static/index.html, they won't work right now
+  How about making a route for /static/index.html that redirects to /?
 
