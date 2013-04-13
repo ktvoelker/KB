@@ -22,7 +22,8 @@ CREATE TABLE note (
   owner   BIGINT    NOT NULL REFERENCES person(id),
   title   TEXT      NOT NULL,
   body    TEXT      NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT NOW()
+  created TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX note_owner_index ON note (owner);

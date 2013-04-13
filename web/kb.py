@@ -14,6 +14,9 @@ SOCKETS = os.getcwd() + "/db/pg"
 
 NOTE_FIELDS = ["title", "body"]
 
+def todo():
+  raise "TODO"
+
 @route("/")
 def home():
   return static("index.html")
@@ -85,6 +88,7 @@ def note_new(c):
       ", ".join(slots) + ") RETURNING id", params)
   if c.rowcount == 1:
     (id,) = c.fetchone()
+    update_tags(c, id)
     return {"id": id}
   else:
     abort(500)
@@ -93,7 +97,7 @@ def note_new(c):
 @transact
 def note_edit(c, id):
   pid = person_id()
-  changes = []
+  changes = ["updated = NOW()"]
   params = []
   for field in NOTE_FIELDS:
     val = request.forms.getunicode(field)
@@ -106,7 +110,51 @@ def note_edit(c, id):
     c.execute(
         "UPDATE kb.note SET " + ", ".join(changes) +
         "WHERE owner = %s AND id = %s", params)
+  update_tags(c, id)
   return None
+
+def update_tags(c, id):
+  if request.forms.add_tags:
+    add_tags = request.forms.add_tags.split(",")
+    # TODO prepare statements?
+    for add_tag in add_tags:
+      (tag_id, note_has_tag) = check_note_tag(id, add_tag)
+      if tag_id is None:
+        tag_id = create_tag(c, add_tag)
+      if not note_has_tag:
+        c.execute("INSERT INTO kb.note_tag (tag_id, note_id) VALUES (%s, %s)",
+            (tag_id, id))
+  if request.forms.del_tags:
+    del_tags = request.forms.del_tags.split(",")
+    for del_tag in del_tags:
+      (tag_id, note_has_tag) = check_note_tag(id, del_tag)
+      if note_has_tag:
+        c.execute("DELETE FROM kb.note_tag WHERE tag_id = %s AND note_id = %s",
+            (tag_id, id))
+
+def create_tag(c, tag):
+  c.execute("INSERT INTO kb.tag (tag) VALUES (%s) RETURNING id", (tag,))
+  return c.fetchone()[0]
+
+def check_note_tag(c, note_id, tag):
+  c.execute(
+      """
+          SELECT t.tag_id, nt.note_id
+          FROM kb.tag t
+          LEFT OUTER JOIN kb.note_tag nt
+          ON nt.note_id = %s AND nt.tag_id = t.id
+          WHERE t.tag = %s
+          """,
+          (note_id, tag))
+  if c.rowcount == 1:
+    (tag_id, match_note_id) = c.fetchone()
+    if match_note_id is None:
+      match_note = False
+    else:
+      match_note = True
+    return (tag_id, match_note)
+  else:
+    return (None, False)
 
 @route("/note/list")
 @transact

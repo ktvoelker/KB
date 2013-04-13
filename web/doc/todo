@@ -2,11 +2,14 @@
 TODO
 ====
 
-Last updated time in note table
-
-Tag support in note functions
-
 Real UI
 
 API tests
+
+Creation time on persons
+
+Delete empty tags
+
+Track the amount of space a user's notes take up
+  Include tags - this means tags have to have their creators tracked
 
