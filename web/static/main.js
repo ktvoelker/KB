@@ -1,16 +1,7 @@
 
-requirejs(["net"], function(net) {
+requirejs(["form"], function(form) {
 
-  for (var i = 0; i < document.forms.length; ++i) {
-    (function(form) {
-      form.addEventListener("submit", function() {
-        net.form(form);
-        return false;
-      }, false);
-    })(document.forms[i]);
-  }
-
-  net.form(document.forms[1]);
+  form.submit(document.forms[1]);
 
 });
 
