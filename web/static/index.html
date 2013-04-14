@@ -2,24 +2,52 @@
 <html>
   <head>
     <title>KB</title>
+    <script src="static/global.js"></script>
+    <script src="static/external/CSSClass.js"></script>
     <script data-main="static/main.js" src="static/external/require.js"></script>
     <link href="static/main.css" type="text/css" rel="stylesheet">
   </head>
   <body>
     <h1>KB</h1>
-    <p>Here you are.</p>
-    <form action="/authenticate" method="POST">
-      <input type="text" name="name" />
-      <input type="password" name="password" />
-      <input type="submit" value="Authenticate" />
-    </form>
-    <form action="/note/list" method="GET">
-      <input type="submit" value="List All Notes" />
-    </form>
-    <form action="/note/:id" method="GET">
-      <input type="text" name="id" />
-      <input type="submit" value="Get Note" />
-    </form>
-    <pre id="output"></pre>
+    <ul>
+      <li><a href="javascript:$id('main').show('login')">Login</a></li>
+      <li><a href="javascript:$id('main').show('app')">App</a></li>
+      <li><a href="javascript:$id('main').show('debug')">Debug</a></li>
+    </ul>
+    <div id="main" class="tabs">
+      <div id="login">
+        <form action="/authenticate" method="POST">
+          <input type="text" name="name" />
+          <input type="password" name="password" />
+          <input type="submit" value="Authenticate" />
+        </form>
+      </div>
+      <div id="app">
+        <ul id="notes" class="list">
+          <li class="template">
+            <h1 class="title"></h1>
+            <p class="updated"></p>
+          </li>
+        </ul>
+      </div>
+      <div id="debug">
+        <form action="/note/list" method="GET">
+          <input type="submit" value="List All Notes" />
+        </form>
+        <form action="/note/:id" method="GET">
+          <input type="text" name="id" />
+          <input type="submit" value="Get Note" />
+        </form>
+        <form action="/note/:id" method="POST">
+          <input type="text" name="id" />
+          <input type="text" name="title" />
+          <input type="text" name="body" />
+          <input type="text" name="add_tags" />
+          <input type="text" name="del_tags" />
+          <input type="submit" value="Edit Note" />
+        </form>
+        <pre id="output"></pre>
+      </div>
+    </div>
   </body>
 </html>

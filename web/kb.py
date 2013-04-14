@@ -66,6 +66,13 @@ def note_get(c, id):
   if c.rowcount == 1:
     row = c.fetchone()
     ret = {"id": id, "title": row[0], "body": row[1], "created": row[2].isoformat()}
+    c.execute("""
+      SELECT t.tag
+      FROM kb.tag t, kb.note_tag nt
+      WHERE t.id = nt.tag_id
+      AND nt.note_id = %s
+      """, (id,))
+    ret["tags"] = [row[0] for row in c]
     return ret
   else:
     abort(404)
@@ -118,7 +125,7 @@ def update_tags(c, id):
     add_tags = request.forms.add_tags.split(",")
     # TODO prepare statements?
     for add_tag in add_tags:
-      (tag_id, note_has_tag) = check_note_tag(id, add_tag)
+      (tag_id, note_has_tag) = check_note_tag(c, id, add_tag)
       if tag_id is None:
         tag_id = create_tag(c, add_tag)
       if not note_has_tag:
@@ -127,7 +134,7 @@ def update_tags(c, id):
   if request.forms.del_tags:
     del_tags = request.forms.del_tags.split(",")
     for del_tag in del_tags:
-      (tag_id, note_has_tag) = check_note_tag(id, del_tag)
+      (tag_id, note_has_tag) = check_note_tag(c, id, del_tag)
       if note_has_tag:
         c.execute("DELETE FROM kb.note_tag WHERE tag_id = %s AND note_id = %s",
             (tag_id, id))
@@ -139,7 +146,7 @@ def create_tag(c, tag):
 def check_note_tag(c, note_id, tag):
   c.execute(
       """
-          SELECT t.tag_id, nt.note_id
+          SELECT t.id, nt.note_id
           FROM kb.tag t
           LEFT OUTER JOIN kb.note_tag nt
           ON nt.note_id = %s AND nt.tag_id = t.id

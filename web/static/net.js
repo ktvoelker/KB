@@ -6,11 +6,15 @@ define(["external/promise"], function(promise) {
     if (err) {
       p.done(err, null);
     } else {
-      var json = JSON.parse(str);
-      if (json) {
-        p.done(null, json);
+      if (str === "") {
+        p.done(null, null);
       } else {
-        p.done(str, null);
+        var json = JSON.parse(str);
+        if (json) {
+          p.done(null, json);
+        } else {
+          p.done(str, null);
+        }
       }
     }
     return p;
