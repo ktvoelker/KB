@@ -8,11 +8,11 @@
     <link href="static/main.css" type="text/css" rel="stylesheet">
   </head>
   <body>
-    <h1>KB</h1>
     <div id="splash">
-      SPLASH!
+      <h1>KB is loading...</h1>
     </div>
     <div id="curtain" style="display:none">
+      <h1 id="app-title">KB</h1>
       <div id="login">
         <form name="login" action="/authenticate" method="POST">
           <input type="text" name="name" />
@@ -23,12 +23,13 @@
       <div id="app">
         <button id="new-note">New Note</button>
         <ul id="notes" class="list">
-          <li class="template">
+          <li class="note template">
             <div class="display">
               <h1 class="title"></h1>
               <p class="updated"></p>
-              <button class="edit-note">Edit</button>
+              <ul class="tags"></ul>
               <p class="body"></p>
+              <button class="edit-note">Edit</button>
             </div>
             <form class="editor"
                   action="/note/:id"
@@ -36,8 +37,9 @@
                   method="POST">
               <input type="hidden" name="id" />
               <input type="text" name="title" class="title" />
-              <button class="save-note">Save</button>
+              <ul class="tags"></ul>
               <textarea rows="5" cols="50" name="body" class="body"></textarea>
+              <button class="save-note">Save</button>
             </form>
           </li>
         </ul>
