@@ -16,7 +16,19 @@ define(["net"], function(net) {
         var val = elem.value;
         var re = pathParam(name);
         if (re.test(url)) {
-          url = url.replace(re, val);
+          if (val) {
+            url = url.replace(re, val);
+          } else {
+            url = form.getAttribute("data-action-new");
+            var listener = (function(elem) {
+              var ret = function(evt) {
+                elem.value = evt.detail;
+                form.removeEventListener("response", ret, false);
+              };
+              return ret;
+            })(elem);
+            form.addEventListener("response", listener, false);
+          }
         } else {
           data[name] = val;
         }
@@ -26,22 +38,27 @@ define(["net"], function(net) {
       alert("Unfilled path parameters in " + url);
     } else {
       net.http(method, url, data, alert, function(obj) {
-        document.getElementById("output").innerText = JSON.stringify(obj);
+        form.dispatchEvent(new CustomEvent(
+            "response",
+            {
+              detail: obj,
+              bubbles: false,
+              cancelable: false
+            }));
       });
     }
   };
 
-  for (var i = 0; i < document.forms.length; ++i) {
-    (function(form) {
-      form.addEventListener("submit", function(evt) {
-        evt.preventDefault();
-        submit(form);
-      }, false);
-    })(document.forms[i]);
-  }
+  var background = function(form) {
+    form.addEventListener("submit", function(evt) {
+      evt.preventDefault();
+      submit(form);
+    }, false);
+  };
 
   return {
-    submit: submit
+    submit: submit,
+    background: background
   };
 
 });

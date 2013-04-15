@@ -23,10 +23,24 @@
         </form>
       </div>
       <div id="app">
+        <button id="new-note">New Note</button>
         <ul id="notes" class="list">
           <li class="template">
-            <h1 class="title"></h1>
-            <p class="updated"></p>
+            <div class="display">
+              <h1 class="title"></h1>
+              <p class="updated"></p>
+              <button class="edit-note">Edit</button>
+              <p class="body"></p>
+            </div>
+            <form class="editor"
+                  action="/note/:id"
+                  data-action-new="/note/new"
+                  method="POST">
+              <input type="hidden" name="id" />
+              <input type="text" name="title" class="title" />
+              <button class="save-note">Save</button>
+              <textarea rows="5" cols="50" name="body" class="body"></textarea>
+            </form>
           </li>
         </ul>
       </div>
