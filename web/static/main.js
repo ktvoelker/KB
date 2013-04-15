@@ -1,8 +1,8 @@
 
-requirejs(["form", "view/base", "notes"], function(form, views, notes) {
+requirejs(["form", "view/base", "notes"], function(forms, views, notes) {
 
   $$("#debug form").forEach(function(form) {
-    form.background();
+    forms.background(form);
     form.addEventListener("response", function(evt) {
       document.getElementById("output").innerText = JSON.stringify(evt.detail);
     }, false);
