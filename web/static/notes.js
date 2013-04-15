@@ -6,9 +6,15 @@ define(["net", "form"], function(net, form) {
     this._data = data;
     this._elem = elem;
     this._display = elem.$(".display");
+    this._display.$(".edit-note").addEventListener("click", function() {
+      that.edit();
+    });
     this._editor = elem.$(".editor");
     this._editor.addEventListener("submit", function() {
       that.save();
+    }, false);
+    this._editor.addEventListener("response", function() {
+      that.fetch();
     }, false);
     form.background(this._editor);
     this._editing = null;
@@ -40,7 +46,7 @@ define(["net", "form"], function(net, form) {
   Note.prototype.refreshEditor = function() {
     var d = this._data;
     var v = this._editor;
-    v.id.value = d.id;
+    v.id.value = d.id ? d.id : "";
     v.title.value = d.title;
     v.body.value = d.body;
   };
@@ -61,6 +67,16 @@ define(["net", "form"], function(net, form) {
     d.body = v.body.value;
     this.refreshDisplay();
     this._setEditing(false);
+  };
+
+  Note.prototype.fetch = function() {
+    if (this._data.id) {
+      var that = this;
+      net.get("/note/" + this._data.id, {}, alert, function(data) {
+        that._data = data;
+        that.refresh();
+      });
+    }
   };
 
   var Notes = function(elem) {
@@ -85,6 +101,7 @@ define(["net", "form"], function(net, form) {
         var note = that._makeNote(data);
         that._notes.push(note);
         that._elem.appendChild(note._elem);
+        note.fetch();
       });
     });
   };

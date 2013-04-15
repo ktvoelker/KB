@@ -58,14 +58,18 @@ def person_id(mandatory=True):
 def note_get(c, id):
   pid = person_id()
   c.execute("""
-    SELECT title, body, created
+    SELECT title, body, created, updated
     FROM kb.note
     WHERE owner = %s
     AND id = %s
     """, (pid, id))
   if c.rowcount == 1:
     row = c.fetchone()
-    ret = {"id": id, "title": row[0], "body": row[1], "created": row[2].isoformat()}
+    ret = { "id": id,
+        "title": row[0],
+        "body": row[1],
+        "created": row[2].isoformat(),
+        "updated": row[3].isoformat() }
     c.execute("""
       SELECT t.tag
       FROM kb.tag t, kb.note_tag nt
@@ -82,13 +86,13 @@ def note_get(c, id):
 def note_new(c):
   pid = person_id()
   fields = ["owner"]
-  slots = ["%%s"]
+  slots = ["%s"]
   params = [pid]
   for field in NOTE_FIELDS:
     if not request.forms[field]:
       abort(400)
     fields.append(field)
-    slots.append("%%s")
+    slots.append("%s")
     params.append(request.forms.getunicode(field))
   c.execute(
       "INSERT INTO kb.note (" + ", ".join(fields) + ") VALUES (" +
@@ -141,7 +145,7 @@ def update_tags(c, id):
 
 def create_tag(c, tag):
   c.execute("INSERT INTO kb.tag (tag) VALUES (%s) RETURNING id", (tag,))
-  return c.fetchone()[0]
+  return {"id": c.fetchone()[0]}
 
 def check_note_tag(c, note_id, tag):
   c.execute(

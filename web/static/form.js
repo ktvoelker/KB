@@ -20,13 +20,13 @@ define(["net"], function(net) {
             url = url.replace(re, val);
           } else {
             url = form.getAttribute("data-action-new");
-            var listener = (function(elem) {
+            var listener = (function(name, elem) {
               var ret = function(evt) {
-                elem.value = evt.detail;
+                elem.value = evt.detail[name];
                 form.removeEventListener("response", ret, false);
               };
               return ret;
-            })(elem);
+            })(name, elem);
             form.addEventListener("response", listener, false);
           }
         } else {
