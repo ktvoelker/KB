@@ -2,19 +2,19 @@
 TODO
 ====
 
-Add tag support
-
-Make authentication less horrifying
-
 Improve visual design
+
+Add tag support
 
 Improve focus control and keyboard shortcuts
 
 Display times nicely
 
-Add search
+Search
 
 Better handling of errors
+
+Logout
 
 API tests
 

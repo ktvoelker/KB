@@ -32,6 +32,11 @@ def transact(fn):
         return fn(cur, *args, **kwargs)
   return result
 
+@route("/ping", method="GET")
+def ping():
+  person_id()
+  return None
+
 @route("/authenticate", method="POST")
 @transact
 def authenticate(c):

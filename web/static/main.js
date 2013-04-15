@@ -1,21 +1,21 @@
 
-requirejs(["form", "view/base", "notes"], function(forms, views, notes) {
+requirejs(["form", "notes", "auth"], function(forms, notes, auth) {
 
-  $$("#debug form").forEach(function(form) {
-    forms.background(form);
-    form.addEventListener("response", function(evt) {
-      document.getElementById("output").innerText = JSON.stringify(evt.detail);
+  var startApp = function() {
+    var ns = new notes.Notes($id("notes"));
+    $id("new-note").addEventListener("click", function() {
+      ns.newNote();
     }, false);
+  };
+
+  var loginForm = document.forms.login;
+  forms.background(loginForm);
+  loginForm.addEventListener("response", function() {
+    startApp();
+    auth.showApp();
   });
 
-  views.mix("view/tabs");
-
-  var notes = new notes.Notes($id("notes"));
-  window.DEBUG = window.DEBUG || {};
-  window.DEBUG.model = notes;
-  $id("new-note").addEventListener("click", function() {
-    notes.newNote();
-  }, false);
+  auth.check(startApp);
 
 });
 
