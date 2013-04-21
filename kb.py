@@ -101,11 +101,11 @@ def note_new(c):
     params.append(request.forms.getunicode(field))
   c.execute(
       "INSERT INTO kb.note (" + ", ".join(fields) + ") VALUES (" +
-      ", ".join(slots) + ") RETURNING id", params)
+      ", ".join(slots) + ") RETURNING id, updated", params)
   if c.rowcount == 1:
-    (id,) = c.fetchone()
+    (id, updated) = c.fetchone()
     update_tags(c, id)
-    return {"id": id}
+    return {"id": id, "updated": updated.isoformat()}
   else:
     abort(500)
 
@@ -120,14 +120,19 @@ def note_edit(c, id):
     if val:
       changes.append("%s = %%s" % (field,))
       params.append(val)
+  ret = {}
   if len(changes) > 0:
     params.append(pid)
     params.append(id)
     c.execute(
         "UPDATE kb.note SET " + ", ".join(changes) +
-        "WHERE owner = %s AND id = %s", params)
+        "WHERE owner = %s AND id = %s " +
+        "RETURNING updated", params)
+    if c.rowcount > 0:
+      ret["updated"] = c.fetchone()[0].isoformat()
+  # TODO change the last updated time even if all we did was change tags
   update_tags(c, id)
-  return None
+  return ret
 
 def update_tags(c, id):
   if request.forms.add_tags:

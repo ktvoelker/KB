@@ -21,8 +21,16 @@ define(["net", "form", "time"], function(net, form, time) {
     this._editor.addEventListener("submit", function() {
       that.save();
     }, false);
-    this._editor.addEventListener("response", function() {
-      that.fetch();
+    this._editor.addEventListener("response", function(r) {
+      var d = r.detail;
+      var any = false;
+      for (var i in d) {
+        any = true;
+        that._data[i] = d[i];
+      }
+      if (any) {
+        that.refresh();
+      }
     }, false);
     form.background(this._editor);
     this._editing = null;

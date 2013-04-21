@@ -2,7 +2,9 @@
 TODO
 ====
 
-Make the time display act like the title for purposes of hiding and showing the body
+Move the time display off to the right of the note rectangle
+
+  Use a one-line display with a single font
 
 Make the text on the buttons bigger
 
