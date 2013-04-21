@@ -62,14 +62,28 @@ main = putCss $ do
     fontSize (px 28)
     fontFamily ["Georgia", "Times New Roman", serif] []
   ".updated" ? do
+    raw
     Colors.noteTitle
     position absolute
     right (px 100)
     top 0
     width (px 100)
     height (px 100)
-    sym margin 0
-    sym padding 0
+    textAlign $ alignSide sideCenter
+    ".num" ? do
+      raw
+      position absolute
+      top 0
+      width (px 100)
+      height (px 75)
+      fontSize (px 70)
+    ".unit" ? do
+      raw
+      position absolute
+      bottom 0
+      width (px 100)
+      height (px 25)
+      fontSize (px 18)
   ".tags" ? do
     width (px 500)
     height (px 50)
