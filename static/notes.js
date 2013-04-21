@@ -1,5 +1,5 @@
 
-define(["net", "form"], function(net, form) {
+define(["net", "form", "time"], function(net, form, time) {
 
   var Note = function(data, elem) {
     var that = this;
@@ -59,7 +59,11 @@ define(["net", "form"], function(net, form) {
     var d = this._data;
     var v = this._display;
     v.$(".title").innerText = d.title;
-    v.$(".updated").innerText = d.updated;
+    if (this._updatedDisplay) {
+      this._updatedDisplay.setTime(d.updated);
+    } else {
+      this._updatedDisplay = new time.Display(d.updated, v.$(".updated"));
+    }
     v.$(".body").innerText = d.body;
   };
 
