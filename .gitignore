@@ -6,3 +6,5 @@
 /static/main.css
 /cabal-dev
 /dist
+/ENV
+/.ready

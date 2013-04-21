@@ -1,6 +1,7 @@
 
 GENNAME := gen-css
 GEN := dist/build/$(GENNAME)/$(GENNAME)
+SOURCES := $(shell find clay -name '*.hs')
 OUT := static/main.css
 
 CABALFLAGS := \
@@ -14,14 +15,14 @@ CABALFLAGS := \
 	--disable-benchmarks \
 	--disable-documentation
 
-.PHONY: all clean pristine $(GEN)
+.PHONY: all clean pristine setup run
 
 all: $(OUT)
 
 $(OUT): $(GEN)
 	$(GEN) > $(OUT)
 
-$(GEN):
+$(GEN): $(SOURCES)
 	cabal-dev install-deps $(CABALFLAGS)
 	cabal-dev configure
 	cabal-dev build
@@ -31,5 +32,13 @@ clean:
 	-cabal-dev clean
 
 pristine: clean
-	-rm -rf cabal-dev
+	-rm -rf .ready cabal-dev ENV
+
+setup: pristine .ready
+
+.ready:
+	scripts/setup.sh
+
+run: .ready $(OUT)
+	scripts/run.sh
 

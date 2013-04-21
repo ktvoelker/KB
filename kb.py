@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.3
 
 from bottle import request, response, route, static_file, run, abort
 
