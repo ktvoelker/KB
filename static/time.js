@@ -3,7 +3,7 @@ define([], function() {
 
   const MILLIS_PER_MINUTE = 1000 * 60;
 
-  var Unit = function(prevUnit, sizeInPrevUnits, unitName, unitChunk) {
+  var Unit = function(prevUnit, sizeInPrevUnits, unitName, unitChunkInPrevUnits) {
     if (prevUnit) {
       prevUnit._nextUnit = this;
     }
@@ -11,7 +11,7 @@ define([], function() {
     this._nextUnit = null;
     this._sizeInPrevUnits = sizeInPrevUnits;
     this._unitName = unitName;
-    this._unitChunk = unitChunk;
+    this._unitChunkInPrevUnits = unitChunkInPrevUnits;
   };
 
   // TODO memoize
@@ -22,11 +22,24 @@ define([], function() {
   };
 
   // TODO memoize
+  Unit.prototype._unitChunkInBaseUnits = function() {
+    return this._prevUnit
+      ? this._unitChunkInPrevUnits * this._prevUnit._sizeInBaseUnits()
+      : 1;
+  };
+
+  // TODO memoize
   Unit.prototype._maxInBaseUnits = function() {
     return this._nextUnit
-      ? this._nextUnit._sizeInBaseUnits()
-        - (this._unitChunk * this._sizeInBaseUnits() / 2)
+      ? this._nextUnit._sizeInBaseUnits() - (this._unitChunkInBaseUnits() / 2)
       : null;
+  };
+
+  Unit.prototype._displayNum = function(n) {
+    return this._prevUnit
+      ? Math.round(
+          Math.round(n / this._unitChunkInBaseUnits()) * this._unitChunkInPrevUnits)
+      : Math.round(n);
   };
 
   Unit.prototype.format = function(n) {
@@ -35,7 +48,7 @@ define([], function() {
       return this._nextUnit.format(n);
     } else {
       return {
-        num: Math.round(n * this._unitChunk / this._sizeInBaseUnits()),
+        num: this._displayNum(n),
         unit: this._unitName,
         timer: this._sizeInBaseUnits()
       };
