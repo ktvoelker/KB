@@ -2,11 +2,19 @@
 TODO
 ====
 
-Make the body text hidden by default
+Show a more useful time display
+
+Make the text on the buttons bigger
+
+Lay out the background color of the New button in a plus shape
+
+  And change the text to say New
 
 Add tag support
 
 Improve focus control and keyboard shortcuts
+
+  Have a triangular cursor indicating the current note
 
 Display times nicely
 

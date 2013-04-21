@@ -23,6 +23,8 @@ union ss f x = mapM_ (flip f x) ss
 
 main :: IO ()
 main = putCss $ do
+  "body" ? userSelect none
+  union ["input", "textarea"] (?) $ userSelect selectText
   "#curtain" ? do
     position relative
     width (px 1000)

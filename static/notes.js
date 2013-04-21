@@ -5,9 +5,17 @@ define(["net", "form"], function(net, form) {
     var that = this;
     this._data = data;
     this._elem = elem;
+    this._setBodyVisible(false);
+    this._elem.addEventListener("click", function() {
+      that._setBodyVisible(true);
+    }, false);
     this._display = elem.$(".display");
     this._display.$(".edit-note").addEventListener("click", function() {
       that.edit();
+    });
+    this._display.$(".title").addEventListener("click", function(evt) {
+      that._toggleBodyVisible();
+      evt.stopPropagation();
     });
     this._editor = elem.$(".editor");
     this._editor.addEventListener("submit", function() {
@@ -20,6 +28,18 @@ define(["net", "form"], function(net, form) {
     this._editing = null;
     this._setEditing(false);
     this.refresh();
+  };
+
+  Note.prototype._setBodyVisible = function(vis) {
+    var display = vis ? "" : "none";
+    this._elem.$$(".body").forEach(function(body) {
+      body.style.display = display;
+    });
+    this._bodyVisible = Boolean(vis);
+  };
+
+  Note.prototype._toggleBodyVisible = function() {
+    this._setBodyVisible(!this._bodyVisible);
   };
 
   Note.prototype._setEditing = function(editing) {
