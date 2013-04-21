@@ -3,3 +3,6 @@
 /kb.ini
 /db/pg
 /static/external
+/static/main.css
+/cabal-dev
+/dist
