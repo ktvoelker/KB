@@ -3,6 +3,8 @@ module Main where
 
 import Clay hiding (map)
 
+import qualified Colors
+
 noBorder :: Css
 noBorder = border none 0 black
 
@@ -41,14 +43,14 @@ main = putCss $ do
   union (map (# focus) [input, button, select, textarea]) (?) $ noOutline
   "#notes" ? raw
   ".note" ? do
+    Colors.noteBody
     "list-style-type" -: "none"
     width (px 700)
-    backgroundColor (rgb 0xFF 0xFF 0x00)
     position relative
     sym2 margin (px 30) auto
     minHeight (px 100)
   ".title" ? do
-    backgroundColor (grayish 0xDD)
+    Colors.noteTitle
     width (px 480)
     height (px 30)
     sym margin 0
@@ -58,7 +60,7 @@ main = putCss $ do
     fontSize (px 28)
     fontFamily ["Georgia", "Times New Roman", serif] []
   ".updated" ? do
-    backgroundColor (grayish 0xDD)
+    Colors.noteTitle
     position absolute
     right (px 100)
     top 0
@@ -71,10 +73,13 @@ main = putCss $ do
     height (px 50)
     sym margin 0
     sym padding 0
-    backgroundColor (rgb 0xFF 0x00 0xFF)
   ".body" ? raw
-  union ["#new-note", ".edit-note"] (?) $ width (px 100)
-  ".save-note" ? width (px 200)
+  union ["#new-note", ".edit-note"] (?) $ do
+    Colors.button
+    width (px 100)
+  ".save-note" ? do
+    Colors.buttonAlert
+    width (px 200)
   union [".edit-note", ".save-note"] (?) $ do
     top 0
     right 0
@@ -82,5 +87,4 @@ main = putCss $ do
     position absolute
     height (px 100)
     noBorder
-    backgroundColor (rgb 0x00 0xFF 0xFF)
  
