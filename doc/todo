@@ -2,8 +2,6 @@
 TODO
 ====
 
-Set the initial size of the textarea to match the existing text
-
 Make the textarea grow as text is entered
 
 Lay out the background color of the New button in a plus shape

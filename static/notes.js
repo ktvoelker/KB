@@ -5,7 +5,6 @@ define(["net", "form", "time"], function(net, form, time) {
     var that = this;
     this._data = data;
     this._elem = elem;
-    this._setBodyVisible(false);
     this._elem.addEventListener("click", function() {
       that._setBodyVisible(true);
     }, false);
@@ -34,8 +33,16 @@ define(["net", "form", "time"], function(net, form, time) {
     }, false);
     form.background(this._editor);
     this._editing = null;
+    this._setBodyVisible(false);
     this._setEditing(false);
     this.refresh();
+  };
+
+  Note.prototype._refreshEditorBodyHeight = function() {
+    if (this._bodyVisible && !this._editing) {
+      this._editor.$(".body").style.height =
+        (this._display.$(".body").offsetHeight - 20) + "px";
+    }
   };
 
   Note.prototype._setBodyVisible = function(vis) {
@@ -43,7 +50,10 @@ define(["net", "form", "time"], function(net, form, time) {
     this._elem.$$(".body").forEach(function(body) {
       body.style.display = display;
     });
+    var prev = this._bodyVisible;
     this._bodyVisible = Boolean(vis);
+    this._refreshEditorBodyHeight();
+    return prev;
   };
 
   Note.prototype._toggleBodyVisible = function() {
@@ -53,11 +63,19 @@ define(["net", "form", "time"], function(net, form, time) {
   Note.prototype._setEditing = function(editing) {
     if (editing !== this._editing) {
       if (editing) {
+        this._prevBodyVisible = this._setBodyVisible(true);
         this._display.style.display = 'none';
         this._editor.style.display = '';
       } else {
         this._display.style.display = '';
         this._editor.style.display = 'none';
+        if (this._editing === true) {
+          this._refreshEditorBodyHeight();
+          if (!this._prevBodyVisible) {
+            this._setBodyVisible(false);
+          }
+          delete this._prevBodyVisible;
+        }
       }
       this._editing = editing;
     }
