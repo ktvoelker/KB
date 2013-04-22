@@ -2,11 +2,9 @@
 TODO
 ====
 
-Move the time display off to the right of the note rectangle
+Set the initial size of the textarea to match the existing text
 
-  Use a one-line display with a single font
-
-Make the text on the buttons bigger
+Make the textarea grow as text is entered
 
 Lay out the background color of the New button in a plus shape
 

@@ -29,4 +29,5 @@ noteTitle = colors (darkMain, lightMain)
 noteBody = colors (lightMain, darkMain)
 button = colors (lightAccent, darkMain)
 buttonAlert = colors (lightAlert, darkAccent)
+rightColumn = colors (white, darkMain)
 

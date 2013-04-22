@@ -103,8 +103,7 @@ define([], function() {
   Display.prototype.refresh = function() {
     window.clearTimeout(this._timer);
     var out = format(this._time);
-    this._elem.$(".num").innerText = out.num;
-    this._elem.$(".unit").innerText = out.unit;
+    this._elem.innerText = out.num + " " + out.unit;
     this._timer = window.setTimeout(this.refresh.bind(this), out.timer);
   };
 
