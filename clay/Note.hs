@@ -7,63 +7,47 @@ import qualified Colors
 import Config
 import Util
 
+contentWidth :: Integer
+contentWidth = mainColumnWidth - sideColumnWidth - columnGap
+
 notes :: Css
 notes = do
-  "#notes" ? do
-    raw
+  raw
+  width (px mainColumnWidth)
+  sym2 margin 0 auto
   ".note" ? do
     Colors.noteBody
     "list-style-type" -: "none"
-    width (px mainColumnWidth)
-    position relative
-    sym2 margin (px 30) auto
+    display block
+    marginBottom (px 30)
     minHeight (px minNoteHeight)
   ".title" ? do
+    raw
     Colors.noteTitle
-    width (px $ mainColumnWidth - (normalPad * 2))
-    height (px 30)
-    sym margin 0
-    sym padding (px normalPad)
-    noBorder
     fontWeight normal
     fontSize (px 28)
     serifFamily
+    width (px contentWidth)
   ".tags" ? do
     raw
-    width (px mainColumnWidth)
-    height (px 50)
+    width (px contentWidth)
   ".body" ? do
     raw
     Colors.noteBody
     fontSize (pt 13)
     serifFamily
-    width (px $ mainColumnWidth - normalPad * 2)
-    sym padding (px normalPad)
+    width (px contentWidth)
   ".updated" ? do
     raw
     Colors.rightColumn
-    position absolute
-    top 0
-    left (px mainColumnWidth)
     width (px sideColumnWidth)
-    height (px $ minNoteHeight `div` 3)
-    sym2 padding (px normalPad) (px $ normalPad * 2)
-  "#new-note" ? do
-    left 0
-    top (px minNoteHeight)
-    margin (px normalPad) (px $ normalPad * 2) (px normalPad) 0
-  union ["#new-note", ".edit-note"] (?) $ do
-    Colors.button
-  ".save-note" ? do
-    Colors.buttonAlert
+    float floatRight
+  ".edit-note" ? Colors.button
+  ".save-note" ? Colors.buttonAlert
   union [".edit-note", ".save-note"] (?) $ do
-    top (px $ minNoteHeight `div` 3)
-    left (px mainColumnWidth)
-    sym2 margin (px normalPad) (px $ normalPad * 2)
-    margin (px normalPad) 0 (px normalPad) (px $ normalPad * 2)
-  union ["#new-note", ".edit-note", ".save-note"] (?) $ do
     raw
-    position absolute
+    float floatRight
+    clear clearRight
     height (px $ minNoteHeight `div` 3)
     width (px sideColumnWidth)
     fontSize (px $ minNoteHeight `div` 5)

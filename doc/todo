@@ -2,17 +2,24 @@
 TODO
 ====
 
-Make the textarea grow as text is entered
+Separate layout and color/font details into two separate module groups
 
-Lay out the background color of the New button in a plus shape
+  And standardize on pluralization of module names
 
-  And change the text to say New
+Make buttons light up on hover
+
+Figure out the best alignment for things
+
+Figure out how to do shadows - we could try a light gray background with the
+effect of white-backed boxes hovering just above it
 
 Add tag support
 
 Improve focus control and keyboard shortcuts
 
   Have a triangular cursor indicating the current note
+
+Make the textarea grow as text is entered
 
 Display times nicely
 

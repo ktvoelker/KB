@@ -12,7 +12,6 @@
       <h1>KB is loading...</h1>
     </div>
     <div id="curtain" style="display:none">
-      <h1 id="app-title">KB</h1>
       <div id="login">
         <form name="login" action="/authenticate" method="POST">
           <input type="text" name="name" />
@@ -21,25 +20,28 @@
         </form>
       </div>
       <div id="app">
-        <button id="new-note">New</button>
-        <ul id="notes" class="list">
+        <div id="sidebar">
+          <h1 id="app-title">KB</h1>
+          <button id="new-note">New</button>
+        </div>
+        <ul id="notes">
           <li class="note template">
             <div class="display">
+              <p class="updated"></p>
+              <button class="edit-note">Edit</button>
               <h1 class="title"></h1>
               <ul class="tags"></ul>
               <p class="body"></p>
-              <p class="updated"></p>
-              <button class="edit-note">Edit</button>
             </div>
             <form class="editor"
                   action="/note/:id"
                   data-action-new="/note/new"
                   method="POST">
               <input type="hidden" name="id" />
+              <button class="save-note">Save</button>
               <input type="text" name="title" class="title" />
               <ul class="tags"></ul>
               <textarea rows="5" name="body" class="body"></textarea>
-              <button class="save-note">Save</button>
             </form>
           </li>
         </ul>

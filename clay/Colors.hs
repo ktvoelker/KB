@@ -39,7 +39,7 @@ lightMain = "#E8E8E8"
 noteTitle = colors (midMain, darkMain)
 noteBody = colors (white, darkMain)
 button = colors (white, darkMain)
-buttonAlert = colors (white, lightMain)
+buttonAlert = colors (darkMain, lightMain)
 leftColumn = colors (white, darkMain)
 rightColumn = colors (white, darkMain)
 
