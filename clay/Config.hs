@@ -15,3 +15,9 @@ serifFamily = fontFamily ["Georgia", "Times New Roman", serif] []
 normalPad :: Integer
 normalPad = 10
 
+totalWidth :: Integer
+totalWidth = mainColumnWidth + (sideColumnWidth + columnGap) * 2
+
+minNoteHeight :: Integer
+minNoteHeight = 100
+

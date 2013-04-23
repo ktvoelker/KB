@@ -11,6 +11,7 @@ import Clay
 colors :: (Color, Color) -> Css
 colors (bg, fg) = backgroundColor bg >> color fg
 
+{-
 darkMain, midMain, lightMain,
   darkAccent, midAccent, lightAccent,
   darkAlert, midAlert, lightAlert :: Color
@@ -24,10 +25,21 @@ lightAccent = "#FFCA73"
 darkAlert   = "#9D0019"
 midAlert    = "#F10026"
 lightAlert  = "#F87085"
+-}
 
-noteTitle = colors (darkMain, lightMain)
-noteBody = colors (lightMain, darkMain)
-button = colors (lightAccent, darkMain)
-buttonAlert = colors (lightAlert, darkAccent)
+darkMain :: Color
+darkMain = "#282828"
+
+midMain :: Color
+midMain = "#DDDDDD"
+
+lightMain :: Color
+lightMain = "#E8E8E8"
+
+noteTitle = colors (midMain, darkMain)
+noteBody = colors (white, darkMain)
+button = colors (white, darkMain)
+buttonAlert = colors (white, lightMain)
+leftColumn = colors (white, darkMain)
 rightColumn = colors (white, darkMain)
 
