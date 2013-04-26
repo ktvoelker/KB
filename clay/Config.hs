@@ -3,21 +3,19 @@ module Config where
 
 import Clay
 
-sideColumnWidth, mainColumnWidth, columnGap :: Integer
-
-sideColumnWidth = 100
-mainColumnWidth = 600
-columnGap = 50
+totalWidth :: Integer
+totalWidth = 700
 
 serifFamily :: Css
+-- TODO does serif produce the wrong output?
 serifFamily = fontFamily ["Georgia", "Times New Roman", serif] []
 
 normalPad :: Integer
 normalPad = 10
 
-totalWidth :: Integer
-totalWidth = mainColumnWidth + (sideColumnWidth + columnGap) * 2
-
 minNoteHeight :: Integer
 minNoteHeight = 100
+
+headerShadowRadius :: Integer
+headerShadowRadius = 10
 

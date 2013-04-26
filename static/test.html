@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/static/external/Font.js"></script>
+    <style>
+      @font-face {
+        font-family: MyGeorgia;
+        src: url(/static/external/Georgia.ttf);
+      }
+      #x {
+        width: 300px;
+        height: 300px;
+        border: 3px solid black;
+        position: relative;
+      }
+      #s {
+        opacity: 0.5;
+        position: absolute;
+        width: 5px;
+        height: 75px;
+        background-color: red;
+        left: 0;
+        top: 0;
+      }
+      #b {
+        opacity: 0.5;
+        position: absolute;
+        left: 0;
+        top: 75px;
+        height: 5px;
+        width: 300px;
+        background-color: blue;
+      }
+      #a {
+        margin: 0;
+        padding: 0;
+        font-size: 75px;
+        position: absolute;
+        left: 5px;
+        top: 0;
+        background-color: #DDDDDD;
+        opacity: 0.5;
+        line-height: 1;
+        font-family: MyGeorgia;
+      }
+    </style>
+    <script>
+      function main() {
+        window.myFont = new Font();
+        var f = window.myFont;
+        f.onload = function() {
+          window.myMetrics = f.measureText("KB", 75);
+        };
+        f.fontFamily = "Georgia";
+        f.src = "/static/external/Georgia.ttf";
+      }
+    </script>
+  </head>
+  <body onload="main()">
+    <div id="x">
+      <div id="s"></div>
+      <div id="b"></div>
+      <p id="a">KB</p>
+    </div>
+  </body>
+</html>

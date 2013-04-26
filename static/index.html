@@ -12,6 +12,12 @@
       <h1>KB is loading...</h1>
     </div>
     <div id="curtain" style="display:none">
+      <header>
+        <h1 id="app-title">KB</h1>
+        <ul id="menu">
+          <li><button id="new-note">New</button></li>
+        </ul>
+      </header>
       <div id="login">
         <form name="login" action="/authenticate" method="POST">
           <input type="text" name="name" />
@@ -20,10 +26,6 @@
         </form>
       </div>
       <div id="app">
-        <div id="sidebar">
-          <h1 id="app-title">KB</h1>
-          <button id="new-note">New</button>
-        </div>
         <ul id="notes">
           <li class="note template">
             <div class="display">
