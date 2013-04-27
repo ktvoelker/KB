@@ -1,5 +1,13 @@
 
-define(["net", "form", "time"], function(net, form, time) {
+define(["net", "time", "ref_editor"], function(net, time, ref_editor) {
+
+  var tagToRef = function(tag) {
+    return {
+      label: tag,
+      menuLabel: tag,
+      cssClass: "tag"
+    };
+  };
 
   var Note = function(data, elem) {
     var that = this;
@@ -9,39 +17,52 @@ define(["net", "form", "time"], function(net, form, time) {
       that._setBodyVisible(true);
     }, false);
     this._display = elem.$(".display");
-    this._display.$(".edit-note").addEventListener("click", function() {
-      that.edit();
+    this._tagEditor = new ref_editor.RefEditor(this._display.$(".tags"), {
+      initial: [],
+      completer: function(str) {
+        return [{
+          label: str,
+          menuLabel: str,
+          cssClass: "ref"
+        }];
+      },
+      shouldSort: false,
+      allowInsert: false
+    });
+    this._button = this._display.$("button");
+    this._button.addEventListener("click", function() {
+      if (that._editing) {
+        that.save();
+      } else {
+        that.edit();
+      }
     });
     this._display.$(".title").addEventListener("click", function(evt) {
-      that._toggleBodyVisible();
-      evt.stopPropagation();
+      if (!that._editing) {
+        that._toggleBodyVisible();
+        evt.stopPropagation();
+      }
     });
-    this._editor = elem.$(".editor");
-    this._editor.addEventListener("submit", function() {
-      that.save();
-    }, false);
-    this._editor.addEventListener("response", function(r) {
-      var d = r.detail;
-      var any = false;
-      for (var i in d) {
-        any = true;
-        that._data[i] = d[i];
-      }
-      if (any) {
-        that.refresh();
-      }
-    }, false);
-    form.background(this._editor);
+    var editors = {
+      title: this._display.$(".title"),
+      body:  this._display.$(".body")
+    };
+    this._editors = editors;
     this._editing = null;
     this._setBodyVisible(false);
     this._setEditing(false);
     this.refresh();
   };
 
-  Note.prototype._refreshEditorBodyHeight = function() {
-    if (this._bodyVisible && !this._editing) {
-      this._editor.$(".body").style.height =
-        (this._display.$(".body").offsetHeight - 20) + "px";
+  Note.prototype._handleResponse = function(r) {
+    var d = r.detail;
+    var any = false;
+    for (var i in d) {
+      any = true;
+      this._data[i] = d[i];
+    }
+    if (any) {
+      this.refresh();
     }
   };
 
@@ -52,7 +73,6 @@ define(["net", "form", "time"], function(net, form, time) {
     });
     var prev = this._bodyVisible;
     this._bodyVisible = Boolean(vis);
-    this._refreshEditorBodyHeight();
     return prev;
   };
 
@@ -62,61 +82,63 @@ define(["net", "form", "time"], function(net, form, time) {
 
   Note.prototype._setEditing = function(editing) {
     if (editing !== this._editing) {
+      this._button.innerText = editing ? "Save" : "Edit";
       if (editing) {
         this._prevBodyVisible = this._setBodyVisible(true);
-        this._display.style.display = 'none';
-        this._editor.style.display = '';
       } else {
-        this._display.style.display = '';
-        this._editor.style.display = 'none';
         if (this._editing === true) {
-          this._refreshEditorBodyHeight();
           if (!this._prevBodyVisible) {
             this._setBodyVisible(false);
           }
           delete this._prevBodyVisible;
         }
       }
+      for (var i in this._editors) {
+        this._editors[i].contentEditable = editing;
+      }
+      this._tagEditor.setEditing(editing);
       this._editing = editing;
     }
   };
 
-  Note.prototype.refreshDisplay = function() {
+  Note.prototype.refresh = function() {
     var d = this._data;
-    var v = this._display;
-    v.$(".title").innerText = d.title;
+    this._editors["title"].innerText = d.title;
     if (this._updatedDisplay) {
       this._updatedDisplay.setTime(d.updated);
     } else {
-      this._updatedDisplay = new time.Display(d.updated, v.$(".updated"));
+      this._updatedDisplay = new time.Display(d.updated, this._display.$(".updated"));
     }
-    v.$(".body").innerText = d.body;
-  };
-
-  Note.prototype.refreshEditor = function() {
-    var d = this._data;
-    var v = this._editor;
-    v.id.value = d.id ? d.id : "";
-    v.title.value = d.title;
-    v.body.value = d.body;
-  };
-
-  Note.prototype.refresh = function() {
-    this.refreshDisplay();
-    this.refreshEditor();
+    if (d.tags) {
+      this._tagEditor.setValue(d.tags.map(tagToRef));
+    }
+    if (d.body) {
+      this._editors["body"].innerText = d.body;
+    }
   };
 
   Note.prototype.edit = function() {
     this._setEditing(true);
   };
 
+  var tagLabel = function(ref) {
+    return ref.label;
+  };
+
   Note.prototype.save = function() {
-    var v = this._editor;
-    var d = this._data;
-    d.title = v.title.value;
-    d.body = v.body.value;
-    this.refreshDisplay();
     this._setEditing(false);
+    var d = this._data;
+    d.title = this._editors["title"].innerText;
+    d.body = this._editors["body"].innerText;
+    var tagChanges = this._tagEditor.getChanges();
+    var url = "/note/" + (d.id ? d.id : "new");
+    var params = {
+      title:    d.title,
+      body:     d.body,
+      add_tags: tagChanges.add.map(tagLabel).join(","),
+      del_tags: tagChanges.del.map(tagLabel).join(",")
+    };
+    net.post(url, params, window.alert, this._handleResponse.bind(this));
   };
 
   Note.prototype.fetch = function() {
@@ -157,7 +179,7 @@ define(["net", "form", "time"], function(net, form, time) {
   };
 
   Notes.prototype.newNote = function() {
-    var note = this._makeNote({title: "", updated: null, body: ""});
+    var note = this._makeNote({title: "", updated: null, body: "", tags: []});
     note.edit();
     this._notes.unshift(note);
     this._elem.insertBefore(note._elem, this._elem.children[0]);

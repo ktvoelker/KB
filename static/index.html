@@ -32,21 +32,11 @@
           <li class="note template">
             <div class="display">
               <p class="updated"></p>
-              <button class="edit-note">Edit</button>
-              <h1 class="title"></h1>
-              <ul class="tags"></ul>
+              <button></button>
+              <h1 class="title one-line-editor"></h1>
+              <p class="tags"></p>
               <p class="body"></p>
             </div>
-            <form class="editor"
-                  action="/note/:id"
-                  data-action-new="/note/new"
-                  method="POST">
-              <input type="hidden" name="id" />
-              <button class="save-note">Save</button>
-              <input type="text" name="title" class="title" />
-              <ul class="tags"></ul>
-              <textarea rows="5" name="body" class="body"></textarea>
-            </form>
           </li>
         </ul>
       </div>

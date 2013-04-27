@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      function edit(id) {
+        var elem = document.getElementById(id);
+        elem.contentEditable = true;
+        elem.focus();
+      }
+      function save(id) {
+        var elem = document.getElementById(id);
+        elem.contentEditable = false;
+      }
+      function main() {
+        document.getElementById("a").addEventListener("keypress", function(evt) {
+          if (evt.charCode === 13) {
+            evt.preventDefault();
+          }
+          return true;
+        }, false);
+      }
+    </script>
+    <style>
+      #a {
+        width: 100%;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body onload="main()">
+    <h1>A</h1>
+    <p id="a">Foo<span contenteditable="false">Bar</span>Baz</p>
+    <button onclick="edit('a')">Edit</button>
+    <button onclick="save('a')">Save</button>
+  </body>
+</html>

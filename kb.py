@@ -155,7 +155,7 @@ def update_tags(c, id):
 
 def create_tag(c, tag):
   c.execute("INSERT INTO kb.tag (tag) VALUES (%s) RETURNING id", (tag,))
-  return {"id": c.fetchone()[0]}
+  return c.fetchone()[0]
 
 def check_note_tag(c, note_id, tag):
   c.execute(

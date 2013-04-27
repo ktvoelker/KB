@@ -2,7 +2,6 @@
 module Note where
 
 import Clay hiding (div)
-import Data.Monoid
 
 import qualified Colors
 import Config
@@ -67,7 +66,7 @@ notes = do
     width (px sideColumnWidth)
     float floatRight
     textAlign (alignSide sideRight)
-  ".edit-note" <> ".save-note" ? do
+  button ? do
     raw
     Colors.noteButton
     float floatRight
@@ -79,7 +78,7 @@ notes = do
     sym2 padding (px 5) (px buttonPadding)
     position relative
     left (px buttonPadding)
-  (".edit-note" <> ".save-note") # hover ? do
+  button # hover ? do
     Colors.noteButtonHover
     -- TODO use Colors.midMain
     "box-shadow" -: "10px 10px 10px 0 #777777"

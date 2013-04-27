@@ -2,7 +2,13 @@
 TODO
 ====
 
-Add tag support
+Trim tags
+
+Add tag completion
+
+Display completions in ref_editor
+
+Get rid of the unnecessary div.display
 
 Improve focus control and keyboard shortcuts
 
