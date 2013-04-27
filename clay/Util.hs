@@ -1,7 +1,8 @@
 
 module Util where
 
-import Clay
+import Clay hiding (map)
+import Data.Monoid
 
 noBorder :: Css
 noBorder = border none 0 black
@@ -18,4 +19,16 @@ raw = do
 
 union :: [Selector] -> (Selector -> a -> Css) -> a -> Css
 union ss f x = mapM_ (flip f x) ss
+
+buttonLike :: Selector
+buttonLike = mconcat1 $ "button" : map (("input" #) . ("type" @=)) ["submit", "reset"]
+
+inputLike :: Selector
+inputLike = mconcat1 ["input", "textarea", "select", "button"]
+
+mconcat1 :: (Monoid m) => [m] -> m
+mconcat1 = foldr1 (<>)
+
+withAnyOf :: Selector -> [Refinement] -> Selector
+withAnyOf sel refs = mconcat1 $ map (sel #) refs
 

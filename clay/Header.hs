@@ -45,8 +45,12 @@ headerStyle = do
     height (pct 100)
   "#new-note" ? do
     raw
-    Colors.header
+    Colors.headerButton
     fontSize (px 20)
     "line-height" -: "20px"
     "vertical-align" -: "baseline"
+    padding (px 5) (px Note.buttonPadding) 0 (px Note.buttonPadding)
+    position relative
+    left (px Note.buttonPadding)
+  "#new-note" `withAnyOf` [hover, active] ? Colors.headerButtonHover
 

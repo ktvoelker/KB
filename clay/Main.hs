@@ -2,6 +2,7 @@
 module Main where
 
 import Clay hiding (map, div)
+import Data.Monoid
 
 import qualified Colors
 import Config
@@ -15,8 +16,8 @@ main = putCss $ do
     raw
     userSelect none
     Colors.background
-  union ["input", "textarea"] (?) $ userSelect selectText
-  union (map (# focus) [input, button, select, textarea]) (?) $ noOutline
+  "input" <> "textarea" ? userSelect selectText
+  inputLike # focus ? noOutline
   header ? do
     position relative
     zIndex 60

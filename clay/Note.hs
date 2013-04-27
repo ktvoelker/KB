@@ -2,13 +2,14 @@
 module Note where
 
 import Clay hiding (div)
+import Data.Monoid
 
 import qualified Colors
 import Config
 import Util
 
 sideColumnWidth :: Integer
-sideColumnWidth = 80
+sideColumnWidth = 100
 
 columnGap :: Integer
 columnGap = 20
@@ -25,6 +26,9 @@ contentWidth = totalWidth - 2 * sideMargin
 mainColumnWidth :: Integer
 mainColumnWidth = contentWidth - sideColumnWidth - columnGap
 
+buttonPadding :: Integer
+buttonPadding = 40
+
 notes :: Css
 notes = do
   raw
@@ -37,8 +41,9 @@ notes = do
     marginBottom (px 30)
     sym padding (px notePadding)
     minHeight (px minNoteHeight)
+    -- TODO use Colors.midMain
     "box-shadow" -: "10px 10px 10px 0 #777777"
-  ".note" ? firstChild & do
+  ".note" # firstChild ? do
     paddingTop (px $ 20 + headerShadowRadius)
   ".title" ? do
     raw
@@ -62,14 +67,20 @@ notes = do
     width (px sideColumnWidth)
     float floatRight
     textAlign (alignSide sideRight)
-  ".edit-note" ? Colors.button
-  ".save-note" ? Colors.buttonAlert
-  union [".edit-note", ".save-note"] (?) $ do
+  ".edit-note" <> ".save-note" ? do
     raw
+    Colors.noteButton
     float floatRight
     clear clearRight
     textAlign (alignSide sideRight)
     height (px $ minNoteHeight `div` 3)
-    width (px sideColumnWidth)
     fontSize (px $ minNoteHeight `div` 5)
+    marginTop (px 15)
+    sym2 padding (px 5) (px buttonPadding)
+    position relative
+    left (px buttonPadding)
+  (".edit-note" <> ".save-note") # hover ? do
+    Colors.noteButtonHover
+    -- TODO use Colors.midMain
+    "box-shadow" -: "10px 10px 10px 0 #777777"
 
