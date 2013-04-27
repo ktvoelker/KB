@@ -16,6 +16,9 @@ columnGap = 20
 sideMargin :: Integer
 sideMargin = 40
 
+notePadding :: Integer
+notePadding = 20
+
 contentWidth :: Integer
 contentWidth = totalWidth - 2 * sideMargin
 
@@ -32,7 +35,11 @@ notes = do
     "list-style-type" -: "none"
     display block
     marginBottom (px 30)
+    sym padding (px notePadding)
     minHeight (px minNoteHeight)
+    "box-shadow" -: "10px 10px 10px 0 #777777"
+  ".note" ? firstChild & do
+    paddingTop (px $ 20 + headerShadowRadius)
   ".title" ? do
     raw
     Colors.noteTitle

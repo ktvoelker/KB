@@ -3,7 +3,9 @@ module Header where
 
 import Clay
 
-import Colors
+import qualified Colors
+import qualified Note
+import Config
 import Util
 
 headerFont :: Css
@@ -13,6 +15,9 @@ headerFont = do
   "font-family" -: "sans-serif"
   "line-height" -: "1"
 
+contentWidth :: Integer
+contentWidth = totalWidth - 2 * (Note.sideMargin + Note.notePadding)
+
 headerStyle :: Css
 headerStyle = do
   Colors.header
@@ -21,6 +26,9 @@ headerStyle = do
   height (px 30)
   -- TODO should use headerShadowRadius
   "box-shadow" -: "0 0 10px 10px #555555"
+  "#header-content" ? do
+    width (px contentWidth)
+    sym2 margin 0 auto
   "#app-title" ? do
     raw
     headerFont

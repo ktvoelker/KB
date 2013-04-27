@@ -18,7 +18,7 @@ midMain = "#DDDDDD"
 lightMain :: Color
 lightMain = "#E8E8E8"
 
-noteTitle = colors (midMain, darkMain)
+noteTitle = colors (white, darkMain)
 noteBody = colors (white, darkMain)
 button = colors (white, darkMain)
 buttonAlert = colors (darkMain, lightMain)
@@ -26,5 +26,4 @@ leftColumn = colors (white, darkMain)
 rightColumn = colors (white, darkMain)
 header = colors (midDarkMain, white)
 background = colors (lightMain, darkMain)
-app = colors (white, darkMain)
 

@@ -24,9 +24,8 @@ main = putCss $ do
   "#app" ? do
     position relative
     zIndex 40
-    Colors.app
     width (px totalWidth)
     sym2 margin 0 auto
-    paddingTop (px headerShadowRadius)
+    sym padding 0
   "#notes" ? notes
  

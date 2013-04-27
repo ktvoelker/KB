@@ -2,16 +2,9 @@
 TODO
 ====
 
-Separate layout and color/font details into two separate module groups
-
-  And standardize on pluralization of module names
-
 Make buttons light up on hover
 
-Figure out the best alignment for things
-
-Figure out how to do shadows - we could try a light gray background with the
-effect of white-backed boxes hovering just above it
+  And maybe give them a persistent outline? Rounded?
 
 Add tag support
 
